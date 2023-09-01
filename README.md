@@ -56,6 +56,8 @@ As a nice side-effect, since a binary representation of the digest is used, Rail
 
 HasMoreSecureToken uses binary hashes directly rather than a hex representation, so we can define an index to speed up lookups for the above example as follows:
 ```ruby
+enable_extension 'pgcrypto' # required for `digest(...)` if not already enabled
+
 create_table :users do |t|
   # We include a unique index to ensure no duplicate tokens are generated
   t.binary :password_reset_token, null: false, index: { unique: true }
