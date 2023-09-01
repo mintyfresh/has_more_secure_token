@@ -1,12 +1,8 @@
-# HasMoreSecureToken
+# Has More Secure Token
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/has_more_secure_token`. To experiment with that code, run `bin/console` for an interactive prompt.
+Find-by-digest extensions for ActiveRecord's `has_secure_token`.
 
 ## Installation
-
-TODO: Replace `has_more_secure_token` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
 
 Install the gem and add to the application's Gemfile by executing:
 
