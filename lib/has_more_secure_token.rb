@@ -10,10 +10,10 @@ module HasMoreSecureToken
   module ClassMethods
     # @param attribute [Symbol]
     # @param length [Integer]
-    # @param digest [String]
+    # @param find_by_digest [String, nil]
     # @return [void]
-    def has_secure_token(attribute = :token, length: MINIMUM_TOKEN_LENGTH, digest: nil) # rubocop:disable Naming/PredicateName
-      finds_secure_token_by_digest(attribute, length: length, digest: digest)
+    def has_secure_token(attribute = :token, length: MINIMUM_TOKEN_LENGTH, find_by_digest: nil) # rubocop:disable Naming/PredicateName
+      finds_secure_token_by_digest(attribute, length: length, digest: find_by_digest) if find_by_digest
 
       super(attribute, length: length)
     end
