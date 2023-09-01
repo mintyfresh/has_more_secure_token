@@ -37,7 +37,7 @@ module HasMoreSecureToken
         token_hash = bind_token_param(attribute.to_s, openssl_digest.digest(token))
 
         # Produces:
-        #   digest("table_name"."attribute", 'sha256') = $1
+        #   digest("table_name"."attribute", 'SHA256') = $1
         find_by(token_arel.eq(token_hash))
       end
 
