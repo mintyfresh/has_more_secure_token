@@ -16,9 +16,56 @@ If bundler is not being used to manage dependencies, install the gem by executin
 
     $ gem install has_more_secure_token
 
+Finally, add this to your `app/models/application_record.rb`:
+
+```ruby
+class ApplicationRecord < ActiveRecord::Base
+  include HasMoreSecureToken
+
+  # ...
+end
+```
+
+Note: HasMoreSecureToken was developed and tested only with PostgreSQL (major versions 12, 14, and 15).
+
 ## Usage
 
-TODO: Write usage instructions here
+To use time-safe lookups with `has_secure_token`, we specify a `find_by_digest` with the digest algorithm we wish to use:
+```ruby
+class User < ApplicationRecord
+  has_secure_token :password_reset_token, find_by_digest: 'sha256'
+end
+```
+Doing so will override the `find_by_{token-name}` and `find_by_{token-name}!` methods (`find_by_password_reset_token` and `find_by_password_reset_token!` in the example above) that perform secure finds.
+
+For example, if we now need to locate a User record by a token, we use:
+```ruby
+# Read a token from somewhere...
+token = params[:password_reset_token]
+
+User.find_by_password_reset_token(token) # => #<User:0x0000...>
+```
+And this will produce the following database query:
+```ruby
+  User Load (1.9ms)  SELECT "users".* FROM "users" WHERE digest("users"."password_reset_token", 'SHA256') = $1 LIMIT $2  [["password_reset_token", "<32 bytes of binary data>"], ["LIMIT", 1]]
+```
+
+As a nice side-effect, since a binary representation of the digest is used, Rails omits the exact values from our logs (regardless of whether our log filters are configured to match the name of the attribute).
+
+### Improving Performance with Indices
+
+HasMoreSecureToken uses binary hashes directly rather than a hex representation, so we can define an index to speed up lookups for the above example as follows:
+```ruby
+create_table :users do |t|
+  # We include a unique index to ensure no duplicate tokens are generated
+  t.binary :password_reset_token, null: false, index: { unique: true }
+
+  t.index "digest(password_reset_token, 'SHA256')",
+          name:  'index_users_on_password_reset_token_digest',
+          using: :hash # recommended for PG12 and newer
+end
+```
+Since we are only concerned with the equality (`=`) operator, using a HASH index will provide fast lookups without revealing timing information in the same way a BTREE index might.
 
 ## Development
 
