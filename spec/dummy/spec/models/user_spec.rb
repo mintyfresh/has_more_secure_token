@@ -23,7 +23,7 @@ RSpec.describe User do
     it 'returns nil when the token is blank' do
       expect(described_class.find_by_password_reset_token('')).to be_nil
     end
-    
+
     it 'returns nil when the token is nil' do
       expect(described_class.find_by_password_reset_token(nil)).to be_nil
     end

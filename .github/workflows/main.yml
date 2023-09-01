@@ -2,26 +2,61 @@ name: Ruby
 
 on:
   push:
-    branches:
-      - main
-
+    branches: [main]
   pull_request:
+    branches: [main]
 
 jobs:
-  build:
+  rubocop:
+    name: Rubocop
     runs-on: ubuntu-latest
-    name: Ruby ${{ matrix.ruby }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+          bundler-cache: true
+      - name: Run Rubocop
+        run: bin/rubocop
+
+  rspec:
+    name: RSpec
+    runs-on: ubuntu-latest
     strategy:
       matrix:
+        postgres:
+          - 12
+          - 14
+          - 15
         ruby:
-          - '3.2.2'
+          - 2.7
+          - 2.7
+          - 3.0
+          - 3.1
+          - 3.2
+
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        ports: ['5432:5432']
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: has_more_secure_token_test
+        options: --health-cmd pg_isready --health-interval 5s --health-timeout 5s --health-retries 10
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: ${{ matrix.ruby }}
-        bundler-cache: true
-    - name: Run the default task
-      run: bundle exec rake
+      - uses: actions/checkout@v2
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+      - name: Run RSpec
+        env:
+          PGHOST: localhost
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGDATABASE: has_more_secure_token_test
+        run: bin/rspec

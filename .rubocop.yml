@@ -5,7 +5,10 @@ require:
 AllCops:
   NewCops: enable
   SuggestExtensions: false
-  TargetRubyVersion: 2.6
+  TargetRubyVersion: 2.7
+  Exclude:
+    - 'spec/dummy/db/schema.rb'
+    - 'vendor/**/*'
 
 Gemspec/DevelopmentDependencies:
   EnforcedStyle: gemspec
@@ -21,3 +24,9 @@ Layout/AccessModifierIndentation:
 
 Layout/LineLength:
   Max: 120
+
+Naming/RescuedExceptionsVariableName:
+  PreferredName: error
+
+Style/Documentation:
+  Enabled: false

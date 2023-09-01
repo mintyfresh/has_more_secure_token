@@ -10,6 +10,8 @@
 !/spec/dummy/log/.keep
 /spec/dummy/*.log
 !/spec/dummy/tmp/.keep
+!/spec/dummy/tmp/cache/.keep
+!/spec/dummy/tmp/pids/.keep
 /spec/dummy/tmp/*
 
 # rspec failure tracking
