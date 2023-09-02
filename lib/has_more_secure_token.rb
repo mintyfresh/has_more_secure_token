@@ -27,7 +27,7 @@ module HasMoreSecureToken
       openssl_digest = OpenSSL::Digest.new(digest)
 
       # An arel node that matches the format of the digest in the index.
-      token_arel = arel_token_digest(attribute, openssl_digest.name)
+      token_arel = arel_token_digest(attribute, digest)
 
       define_singleton_method(:"find_by_#{attribute}") do |token|
         # Short-circuit to avoid the database query if the token is obviously invalid.
