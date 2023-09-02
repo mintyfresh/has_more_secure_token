@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    has_more_secure_token (0.1.0)
+    has_more_secure_token (0.1.1)
       activerecord
 
 GEM
